@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
-import { ArrowDownRight, ArrowRight, Check, ChevronDown, Clock3, Menu, MessageCircle, Move3D, Ruler, ShieldCheck, Sofa, X, Wrench, Instagram, Phone, Send } from 'lucide-react'
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Menu, MessageCircle, Move3D, Ruler, ShieldCheck, Sofa, X, Wrench, Instagram, Phone, Send } from 'lucide-react'
 
 const CONTACT_PHONE = '' // Добавьте номер в международном формате без +, например 79991234567
 const WA_LINK = CONTACT_PHONE ? `https://wa.me/${CONTACT_PHONE}` : ''
@@ -50,6 +50,43 @@ function ModelStage() {
   </div>
 }
 
+const heroSlides = [
+  { title: 'Архитектура хранения', category: 'ШКАФЫ И ГАРДЕРОБНЫЕ', image: 'photo-1595428774223-ef52624120d2', number: '01' },
+  { title: 'Форма и функция', category: 'КУХОННЫЕ ПРОСТРАНСТВА', image: 'photo-1556911220-e15b29be8c8f', number: '02' },
+  { title: 'Тихая эстетика', category: 'СПАЛЬНИ И МЯГКАЯ МЕБЕЛЬ', image: 'photo-1616486338812-3dadae4b4ace', number: '03' },
+  { title: 'Рабочее пространство', category: 'СТОЛЫ И КАБИНЕТЫ', image: 'photo-1497366754035-f200968a6e72', number: '04' },
+]
+function HeroFurnitureCarousel() {
+  const [active, setActive] = useState(0)
+  const [direction, setDirection] = useState(1)
+  const go = (step: number) => {
+    setDirection(step)
+    setActive(current => (current + step + heroSlides.length) % heroSlides.length)
+  }
+  const prev = heroSlides[(active - 1 + heroSlides.length) % heroSlides.length]
+  const current = heroSlides[active]
+  const next = heroSlides[(active + 1) % heroSlides.length]
+  return <div className="hero-visual hero-carousel" aria-label="Карусель мебели">
+    <div className="carousel-topline"><span><i className="live-dot" /> ИНТЕРЬЕРНАЯ ПОДБОРКА</span><span>0{active + 1} <b>/</b> 04</span></div>
+    <div className="carousel-stage" key={current.image} data-direction={direction}>
+      <button className="carousel-card carousel-card-side carousel-card-prev" onClick={() => go(-1)} aria-label="Предыдущее фото">
+        <img src={`https://images.unsplash.com/${prev.image}?auto=format&fit=crop&w=900&q=85`} alt={prev.title} />
+      </button>
+      <div className="carousel-card carousel-card-main">
+        <img src={`https://images.unsplash.com/${current.image}?auto=format&fit=crop&w=1400&q=90`} alt={current.title} fetchPriority="high" />
+        <div className="carousel-image-shade" />
+        <div className="carousel-image-caption"><span>{current.category}</span><strong>{current.title}</strong></div>
+        <span className="carousel-image-index">P. / {current.number}</span>
+      </div>
+      <button className="carousel-card carousel-card-side carousel-card-next" onClick={() => go(1)} aria-label="Следующее фото">
+        <img src={`https://images.unsplash.com/${next.image}?auto=format&fit=crop&w=900&q=85`} alt={next.title} />
+      </button>
+    </div>
+    <div className="carousel-bottomline"><span>ВИЗУАЛЬНЫЕ ПРИМЕРЫ · ФОТО ЗАМЕНИМ НА ВАШИ</span><div className="carousel-controls"><button onClick={() => go(-1)} aria-label="Предыдущее фото"><ChevronLeft size={18} /></button><button onClick={() => go(1)} aria-label="Следующее фото"><ChevronRight size={18} /></button></div></div>
+    <div className="hero-carousel-note"><span className="note-symbol">↗</span><div><strong>Точность в деталях</strong><small>От крепежа до финальной регулировки</small></div></div>
+  </div>
+}
+
 function App() {
   const [activeFilter, setActiveFilter] = useState('Все')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -77,7 +114,8 @@ function App() {
       <button className="menu-button" aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'} onClick={() => setMenuOpen(v => !v)}>{menuOpen ? <X /> : <Menu />}</button>
     </header>
 
-    <section className="hero section-wrap" id="top">
+    <section className="hero section-wrap hero-showcase" id="top">
+      <div className="hero-wordmark" aria-hidden="true">PULIKOV</div>
       <div className="hero-copy">
         <div className="eyebrow"><span className="eyebrow-line" /> ЧАСТНЫЙ МАСТЕР · МОСКВА</div>
         <h1>Мебель должна<br />стоять <em>идеально.</em></h1>
@@ -85,13 +123,8 @@ function App() {
         <div className="hero-actions"><a href="#contact" className="button button-primary">Рассчитать сборку <ArrowRight size={17} /></a><a href="#portfolio" className="text-link">Посмотреть работы <ArrowDownRight size={17} /></a></div>
         <div className="hero-proof"><div className="proof-icon"><Check size={17} /></div><div><strong>Ровно. Надёжно. По делу.</strong><span>Согласуем задачу до начала работы</span></div></div>
       </div>
-      <div className="hero-visual">
-        <div className="hero-image" role="img" aria-label="Современная минималистичная мебель в интерьере" />
-        <div className="image-index">PULIKOV / OBJECT 001</div>
-        <div className="floating-note"><span className="note-symbol">↗</span><div><strong>Точность в деталях</strong><small>От крепежа до финальной регулировки</small></div></div>
-        <div className="hero-number">01<span>—</span>04</div>
-      </div>
-      <div className="hero-bottom"><span>ПОДХОД, КОТОРЫЙ ВИДНО</span><a href="#services">Листайте, чтобы узнать больше <ChevronDown size={15} /></a><span>55°45' N · MOSCOW</span></div>
+      <HeroFurnitureCarousel />
+      <div className="hero-bottom"><span>МЕБЕЛЬ · ТОЧНОСТЬ · ДЕТАЛИ</span><a href="#services">Листайте, чтобы узнать больше <ChevronDown size={15} /></a><span>ДМИТРИЙ ПУЛИКОВ</span></div>
     </section>
 
     <section className="intro-strip"><div className="section-wrap intro-inner"><span className="strip-label">ПРИНЦИП РАБОТЫ</span><p>Не просто собрать мебель. <em>Сделать так, чтобы всё работало как должно.</em></p><span className="strip-mark">DP / 01</span></div></section>
