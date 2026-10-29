@@ -141,9 +141,15 @@ function App() {
         const progress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (viewportHeight + rect.height * 0.15)))
         const shift = (0.5 - progress) * 34
         const textShift = (1 - progress) * 20
+        const paragraphShift = textShift * 0.7
+        const textOpacity = 0.72 + progress * 0.28
+        const imageScale = 1.04 - progress * 0.04
         scene.style.setProperty('--scene-progress', progress.toFixed(3))
         scene.style.setProperty('--scene-shift', `${shift.toFixed(1)}px`)
         scene.style.setProperty('--scene-text-shift', `${textShift.toFixed(1)}px`)
+        scene.style.setProperty('--scene-paragraph-shift', `${paragraphShift.toFixed(1)}px`)
+        scene.style.setProperty('--scene-text-opacity', textOpacity.toFixed(3))
+        scene.style.setProperty('--scene-image-scale', imageScale.toFixed(3))
       })
     }
     const onScroll = () => {
