@@ -772,15 +772,15 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
 .scroll-scene .about-copy h2,
 .scroll-scene .contact-copy h2 {
   transform: translate3d(0, var(--scene-text-shift, 20px), 0);
-  opacity: calc(.72 + var(--scene-progress, 0) * .28);
+  opacity: var(--scene-text-opacity, 1);
   transition: opacity .25s linear;
 }
 .scroll-scene .section-heading > p,
 .scroll-scene .model-copy > p,
 .scroll-scene .about-copy > p,
 .scroll-scene .contact-copy > p {
-  transform: translate3d(0, calc(var(--scene-text-shift, 20px) * .7), 0);
-  opacity: calc(.76 + var(--scene-progress, 0) * .24);
+  transform: translate3d(0, var(--scene-paragraph-shift, 14px), 0);
+  opacity: var(--scene-text-opacity, 1);
 }
 .scroll-scene .portfolio-image-wrap,
 .scroll-scene .model-stage,
@@ -790,7 +790,7 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
   transition: transform .12s linear;
 }
 .scroll-scene .portfolio-image-wrap img {
-  transform: scale(calc(1.04 - var(--scene-progress, 0) * .04));
+  transform: scale(var(--scene-image-scale, 1));
   transition: transform .12s linear;
 }
 .scroll-scene .service-row {
@@ -817,11 +817,11 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
   .scroll-scene .section-heading h2,
   .scroll-scene .model-copy h2,
   .scroll-scene .about-copy h2,
-  .scroll-scene .contact-copy h2 { transform:translate3d(0,calc(var(--scene-text-shift, 12px) * .65),0); }
+  .scroll-scene .contact-copy h2 { transform:translate3d(0,var(--scene-text-shift, 12px),0); }
   .scroll-scene .portfolio-image-wrap,
   .scroll-scene .model-stage,
   .scroll-scene .about-portrait,
-  .scroll-scene .process-item { transform:translate3d(0,calc(var(--scene-shift, 0px) * .6),0); }
+  .scroll-scene .process-item { transform:translate3d(0,var(--scene-shift, 0px),0); }
 }
 @media (prefers-reduced-motion:reduce) {
   .intro-sequence,.intro-monogram,.intro-kicker,.intro-center h2 span,.intro-center h2 em,.intro-center h2 strong,.intro-message,.intro-signature { animation:none !important; }
