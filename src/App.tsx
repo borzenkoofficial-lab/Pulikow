@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Menu, MessageCircle, Move3D, Ruler, ShieldCheck, Sofa, X, Wrench, Instagram, Phone, Send } from 'lucide-react'
@@ -87,7 +87,37 @@ function HeroFurnitureCarousel() {
   </div>
 }
 
+function IntroSequence({ onComplete }: { onComplete: () => void }) {
+  const [leaving, setLeaving] = useState(false)
+  const [progress, setProgress] = useState(0)
+  useEffect(() => {
+    const started = Date.now()
+    const progressTimer = window.setInterval(() => setProgress(Math.min(100, ((Date.now() - started) / 5000) * 100)), 40)
+    const exitTimer = window.setTimeout(() => {
+      setLeaving(true)
+      window.setTimeout(onComplete, 850)
+    }, 5000)
+    return () => { window.clearInterval(progressTimer); window.clearTimeout(exitTimer) }
+  }, [onComplete])
+  const skip = () => { setLeaving(true); window.setTimeout(onComplete, 500) }
+  return <div className={leaving ? 'intro-sequence intro-sequence-leaving' : 'intro-sequence'} role="dialog" aria-label="Приветствие PULIKOV">
+    <div className="intro-grain" aria-hidden="true" />
+    <div className="intro-topline"><span>DP / STUDIO</span><span>СБОРКА МЕБЕЛИ · МОСКВА</span><span>2026</span></div>
+    <div className="intro-center">
+      <div className="intro-monogram"><span>D</span><span>P</span><i /></div>
+      <p className="intro-kicker"><span /> ЛИЧНОЕ ПРИВЕТСТВИЕ</p>
+      <h2><span>Здравствуйте.</span><br /><em>Я — Дмитрий</em><br /><strong>Пуликов.</strong></h2>
+      <p className="intro-message">Помогаю мебели обрести своё место.<br />Точно. Спокойно. С вниманием к деталям.</p>
+      <div className="intro-signature"><span>ПРИЯТНО ПОЗНАКОМИТЬСЯ</span><b>Д. Пуликов</b></div>
+    </div>
+    <div className="intro-bottomline"><span>ХОРОШАЯ СБОРКА НЕ ТРЕБУЕТ ЛИШНИХ СЛОВ</span><div className="intro-progress"><i style={{ width: String(progress) + '%' }} /></div><button onClick={skip}>Пропустить <ArrowUpRight size={14} /></button></div>
+    <div className="intro-giant" aria-hidden="true">PULIKOV</div>
+  </div>
+}
+
 function App() {
+  const [introVisible, setIntroVisible] = useState(true)
+  const finishIntro = useMemo(() => () => setIntroVisible(false), [])
   const [activeFilter, setActiveFilter] = useState('Все')
   const [menuOpen, setMenuOpen] = useState(false)
   const [form, setForm] = useState({ name: '', phone: '', type: 'Шкаф или гардеробная', details: '' })
@@ -104,6 +134,7 @@ function App() {
   }
   const closeMenu = () => setMenuOpen(false)
   return <main>
+    {introVisible && <IntroSequence onComplete={finishIntro} />}
     <header className="header">
       <a className="brand" href="#top" onClick={closeMenu} aria-label="Pulikov — главная"><span className="brand-mark">P<span>.</span></span><span className="brand-word">PULIKOV<small>СБОРКА МЕБЕЛИ</small></span></a>
       <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
@@ -135,28 +166,28 @@ function App() {
       <div className="hero-bottom"><span>МЕБЕЛЬ · ТОЧНОСТЬ · ДЕТАЛИ</span><a href="#services">Листайте, чтобы узнать больше <ChevronDown size={15} /></a><span>ДМИТРИЙ ПУЛИКОВ</span></div>
     </section>
 
-    <section className="intro-strip"><div className="section-wrap intro-inner"><span className="strip-label">ПРИНЦИП РАБОТЫ</span><p>Не просто собрать мебель. <em>Сделать так, чтобы всё работало как должно.</em></p><span className="strip-mark">DP / 01</span></div></section>
+    <section className="intro-strip sheet-panel sheet-panel-1"><div className="section-wrap intro-inner"><span className="strip-label">ПРИНЦИП РАБОТЫ</span><p>Не просто собрать мебель. <em>Сделать так, чтобы всё работало как должно.</em></p><span className="strip-mark">DP / 01</span></div></section>
 
-    <section className="section-wrap services-section" id="services">
+    <section className="section-wrap services-section sheet-panel sheet-panel-2" id="services">
       <div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> ЧТО Я СОБИРАЮ</div><h2>У каждой вещи<br />своё <em>место.</em></h2></div><p>От одной тумбы до целой квартиры с новой мебелью. Обсудим объём, комплектацию и удобное время.</p></div>
       <div className="service-list">{services.map(s => { const Icon = s.icon; return <a href="#contact" className="service-row" key={s.id} onClick={() => setForm(f => ({...f, type: s.title}))}><span className="service-number">{s.n}</span><span className="service-icon"><Icon size={21} strokeWidth={1.5} /></span><span className="service-main"><strong>{s.title}</strong><small>{s.desc}</small></span><span className="service-time"><Clock3 size={14} /> {s.time}</span><span className="service-arrow"><ArrowDownRight size={20} /></span></a>})}</div>
       <div className="service-footnote"><span>*</span> Срок зависит от модели мебели, объёма и состояния помещения. Точное время обсудим заранее.</div>
     </section>
 
-    <section className="portfolio-section" id="portfolio"><div className="section-wrap">
+    <section className="portfolio-section sheet-panel sheet-panel-3" id="portfolio"><div className="section-wrap">
       <div className="section-heading portfolio-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> ПОРТФОЛИО</div><h2>Результат —<br /><em>в деталях.</em></h2></div><p>Здесь будут реальные проекты: фотографии до и после, особенности задачи и итог. Пока это визуальные примеры стиля — они не выдаются за выполненные заказы.</p></div>
       <div className="filter-row">{filters.map(f => <button key={f} className={activeFilter === f ? 'filter active' : 'filter'} onClick={() => setActiveFilter(f)}>{f}</button>)}<span className="filter-count">{String(filteredPortfolio.length).padStart(2, '0')} ПРОЕКТА</span></div>
       <div className="portfolio-grid">{filteredPortfolio.map((p, i) => <article className="portfolio-card" key={p.title}><div className="portfolio-image-wrap"><img src={`https://images.unsplash.com/${p.image}?auto=format&fit=crop&w=1000&q=85`} alt={p.title} loading="lazy" /><span className="portfolio-tag">ВИЗУАЛЬНЫЙ ПРИМЕР</span><span className="portfolio-arrow"><ArrowUpRightIcon /></span></div><div className="portfolio-meta"><div><span>{p.type}</span><h3>{p.title}</h3></div><span className="portfolio-number">0{i + 1}</span></div><p className="portfolio-note">{p.note} — замените фото на реальные объекты.</p></article>)}</div>
       <div className="portfolio-disclaimer"><span className="disclaimer-dot" /> Демонстрационные изображения. Реальные фотографии выполненных работ добавляются после съёмки объектов.</div>
     </div></section>
 
-    <section className="model-section section-wrap"><div className="model-copy"><div className="eyebrow"><span className="eyebrow-line" /> КАК УСТРОЕНА МЕБЕЛЬ</div><h2>Сборка начинается<br />с <em>понимания.</em></h2><p>Покрутите модель, рассмотрите конструкцию и попробуйте режим разборки. Так же внимательно я подхожу к реальной мебели: сначала разобраться, затем собирать.</p><div className="model-features"><div><span>01</span><strong>Проверка комплектации</strong></div><div><span>02</span><strong>Сборка по схеме</strong></div><div><span>03</span><strong>Финальная регулировка</strong></div></div><a href="#contact" className="text-link">Обсудить вашу мебель <ArrowRight size={16} /></a></div><ModelStage /></section>
+    <section className="model-section section-wrap sheet-panel sheet-panel-4"><div className="model-copy"><div className="eyebrow"><span className="eyebrow-line" /> КАК УСТРОЕНА МЕБЕЛЬ</div><h2>Сборка начинается<br />с <em>понимания.</em></h2><p>Покрутите модель, рассмотрите конструкцию и попробуйте режим разборки. Так же внимательно я подхожу к реальной мебели: сначала разобраться, затем собирать.</p><div className="model-features"><div><span>01</span><strong>Проверка комплектации</strong></div><div><span>02</span><strong>Сборка по схеме</strong></div><div><span>03</span><strong>Финальная регулировка</strong></div></div><a href="#contact" className="text-link">Обсудить вашу мебель <ArrowRight size={16} /></a></div><ModelStage /></section>
 
-    <section className="about-section" id="about"><div className="section-wrap about-grid"><div className="about-portrait"><div className="portrait-placeholder"><span>DP</span><small>ДМИТРИЙ ПУЛИКОВ</small></div><div className="portrait-caption">ЛИЧНЫЙ ПОДХОД <span>·</span> ОТВЕТСТВЕННОСТЬ ЗА РЕЗУЛЬТАТ</div></div><div className="about-copy"><div className="eyebrow"><span className="eyebrow-line" /> О МАСТЕРЕ</div><h2>Работаю так,<br />как хотел бы,<br /><em>чтобы сделали мне.</em></h2><p>Меня зовут Дмитрий Пуликов. Я собираю мебель в Москве и Московской области. Для меня важны аккуратность, понятная договорённость и чистый результат — без недосказанности и спешки.</p><p className="about-note">На сайте не публикую выдуманные цифры, отзывы или чужие проекты. По запросу можно обсудить вашу задачу, объём и условия до выезда.</p><a className="button button-dark" href="#contact">Связаться с Дмитрием <ArrowRight size={17} /></a></div></div></section>
+    <section className="about-section sheet-panel sheet-panel-5" id="about"><div className="section-wrap about-grid"><div className="about-portrait"><div className="portrait-placeholder"><span>DP</span><small>ДМИТРИЙ ПУЛИКОВ</small></div><div className="portrait-caption">ЛИЧНЫЙ ПОДХОД <span>·</span> ОТВЕТСТВЕННОСТЬ ЗА РЕЗУЛЬТАТ</div></div><div className="about-copy"><div className="eyebrow"><span className="eyebrow-line" /> О МАСТЕРЕ</div><h2>Работаю так,<br />как хотел бы,<br /><em>чтобы сделали мне.</em></h2><p>Меня зовут Дмитрий Пуликов. Я собираю мебель в Москве и Московской области. Для меня важны аккуратность, понятная договорённость и чистый результат — без недосказанности и спешки.</p><p className="about-note">На сайте не публикую выдуманные цифры, отзывы или чужие проекты. По запросу можно обсудить вашу задачу, объём и условия до выезда.</p><a className="button button-dark" href="#contact">Связаться с Дмитрием <ArrowRight size={17} /></a></div></div></section>
 
-    <section className="process-section section-wrap"><div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> ПРОСТОЙ ПРОЦЕСС</div><h2>От сообщения<br />до <em>готового результата.</em></h2></div><p>Без сложных согласований. Понимаем задачу, фиксируем договорённости и делаем работу.</p></div><div className="process-grid">{[{n:'01',t:'Вы описываете задачу',d:'Что нужно собрать, где находится мебель и есть ли инструкция.'},{n:'02',t:'Согласуем детали',d:'Уточняем объём, сроки, адрес и стоимость до начала работ.'},{n:'03',t:'Приезжаю и собираю',d:'Проверяю комплектность, собираю и регулирую механизмы.'},{n:'04',t:'Проверяем вместе',d:'Показываю результат, убираю упаковку в согласованных пределах.'}].map(x=><div className="process-item" key={x.n}><span>{x.n}</span><h3>{x.t}</h3><p>{x.d}</p><div className="process-line" /></div>)}</div></section>
+    <section className="process-section section-wrap sheet-panel sheet-panel-6"><div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> ПРОСТОЙ ПРОЦЕСС</div><h2>От сообщения<br />до <em>готового результата.</em></h2></div><p>Без сложных согласований. Понимаем задачу, фиксируем договорённости и делаем работу.</p></div><div className="process-grid">{[{n:'01',t:'Вы описываете задачу',d:'Что нужно собрать, где находится мебель и есть ли инструкция.'},{n:'02',t:'Согласуем детали',d:'Уточняем объём, сроки, адрес и стоимость до начала работ.'},{n:'03',t:'Приезжаю и собираю',d:'Проверяю комплектность, собираю и регулирую механизмы.'},{n:'04',t:'Проверяем вместе',d:'Показываю результат, убираю упаковку в согласованных пределах.'}].map(x=><div className="process-item" key={x.n}><span>{x.n}</span><h3>{x.t}</h3><p>{x.d}</p><div className="process-line" /></div>)}</div></section>
 
-    <section className="contact-section" id="contact"><div className="section-wrap contact-grid"><div className="contact-copy"><div className="eyebrow"><span className="eyebrow-line" /> ОБСУДИМ ВАШУ ЗАДАЧУ</div><h2>Есть мебель.<br />Есть <em>решение.</em></h2><p>Расскажите, что нужно собрать. Я уточню детали и помогу понять следующий шаг.</p><div className="contact-detail"><span className="contact-detail-icon"><MessageCircle size={18} /></span><div><small>ГЕОГРАФИЯ</small><strong>Москва и Московская область</strong></div></div><div className="contact-detail"><span className="contact-detail-icon"><Clock3 size={18} /></span><div><small>СВЯЗЬ</small><strong>В удобное время по договорённости</strong></div></div><div className="contact-smallprint">Стоимость и время выезда подтверждаются до начала работ.</div></div>
+    <section className="contact-section sheet-panel sheet-panel-7" id="contact"><div className="section-wrap contact-grid"><div className="contact-copy"><div className="eyebrow"><span className="eyebrow-line" /> ОБСУДИМ ВАШУ ЗАДАЧУ</div><h2>Есть мебель.<br />Есть <em>решение.</em></h2><p>Расскажите, что нужно собрать. Я уточню детали и помогу понять следующий шаг.</p><div className="contact-detail"><span className="contact-detail-icon"><MessageCircle size={18} /></span><div><small>ГЕОГРАФИЯ</small><strong>Москва и Московская область</strong></div></div><div className="contact-detail"><span className="contact-detail-icon"><Clock3 size={18} /></span><div><small>СВЯЗЬ</small><strong>В удобное время по договорённости</strong></div></div><div className="contact-smallprint">Стоимость и время выезда подтверждаются до начала работ.</div></div>
       <form className="contact-form" onSubmit={submitForm}><div className="form-top"><span>ЗАПРОС НА СБОРКУ</span><span>DP / 04</span></div><label>Как к вам обращаться<input value={form.name} onChange={e => setForm(f => ({...f, name:e.target.value}))} placeholder="Ваше имя" autoComplete="name" /></label><label>Номер телефона<input value={form.phone} onChange={e => setForm(f => ({...f, phone:e.target.value}))} placeholder="+7 900 000-00-00" autoComplete="tel" type="tel" /></label><label>Что нужно собрать<select value={form.type} onChange={e => setForm(f => ({...f, type:e.target.value}))}><option>Шкаф или гардеробная</option><option>Кухня</option><option>Кровать или спальня</option><option>Стол или рабочее место</option><option>Комод, тумба, стеллаж</option><option>Несколько предметов мебели</option><option>Другое</option></select></label><label>Дополнительные детали <span className="optional">(необязательно)</span><textarea value={form.details} onChange={e => setForm(f => ({...f, details:e.target.value}))} placeholder="Модель, адрес, желаемая дата..." rows={3} /></label>{formError && <p className="form-error" role="status">{formError}</p>}<button className="button button-primary form-submit" type="submit">Отправить запрос <ArrowRight size={17} /></button><p className="form-privacy">Нажимая кнопку, вы соглашаетесь на обработку данных для ответа на запрос.</p></form>
     </div></section>
 
