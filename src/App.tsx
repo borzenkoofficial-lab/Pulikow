@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import PortfolioPage from './PortfolioPage'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3, Menu, MessageCircle, Move3D, Ruler, ShieldCheck, Sofa, X, Wrench, Instagram, Phone, Send } from 'lucide-react'
@@ -115,7 +116,7 @@ function IntroSequence({ onComplete }: { onComplete: () => void }) {
   </div>
 }
 
-function App() {
+function HomePage() {
   const [introVisible, setIntroVisible] = useState(true)
   const finishIntro = useMemo(() => () => setIntroVisible(false), [])
   useEffect(() => {
@@ -185,7 +186,7 @@ function App() {
     <header className="header">
       <a className="brand" href="#top" onClick={closeMenu} aria-label="Pulikov — главная"><span className="brand-mark">P<span>.</span></span><span className="brand-word">PULIKOV<small>СБОРКА МЕБЕЛИ</small></span></a>
       <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
-        <a href="#services" onClick={closeMenu}>Услуги</a><a href="#portfolio" onClick={closeMenu}>Работы</a><a href="#about" onClick={closeMenu}>О мастере</a>
+        <a href="#services" onClick={closeMenu}>Услуги</a><a href="/portfolio">Портфолио</a><a href="#portfolio" onClick={closeMenu}>Работы</a><a href="#about" onClick={closeMenu}>О мастере</a>
         <a className="nav-mobile-contact" href="#contact" onClick={closeMenu}>Обсудить задачу <ArrowRight size={15} /></a>
       </nav>
       <div className="header-right"><span className="availability"><i /> Москва и область</span><a href="#contact" className="header-cta">Обсудить задачу <ArrowDownRight size={16} /></a></div>
@@ -222,7 +223,7 @@ function App() {
     </section>
 
     <section className="portfolio-section scroll-scene" id="portfolio"><div className="section-wrap">
-      <div className="section-heading portfolio-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> ПОРТФОЛИО</div><h2>Результат —<br /><em>в деталях.</em></h2></div><p>Здесь будут реальные проекты: фотографии до и после, особенности задачи и итог. Пока это визуальные примеры стиля — они не выдаются за выполненные заказы.</p></div>
+      <div className="section-heading portfolio-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> ПОРТФОЛИО</div><h2>Результат —<br /><em>в деталях.</em></h2></div><p>Здесь будут реальные проекты: фотографии до и после, особенности задачи и итог. Пока это визуальные примеры стиля — они не выдаются за выполненные заказы.</p><a className="portfolio-all-link" href="/portfolio">Открыть всё портфолио <ArrowUpRight size={16} /></a></div>
       <div className="filter-row">{filters.map(f => <button key={f} className={activeFilter === f ? 'filter active' : 'filter'} onClick={() => setActiveFilter(f)}>{f}</button>)}<span className="filter-count">{String(filteredPortfolio.length).padStart(2, '0')} ПРОЕКТА</span></div>
       <div className="portfolio-grid">{filteredPortfolio.map((p, i) => <article className="portfolio-card" key={p.title}><div className="portfolio-image-wrap"><img src={`https://images.unsplash.com/${p.image}?auto=format&fit=crop&w=1000&q=85`} alt={p.title} loading="lazy" /><span className="portfolio-tag">ВИЗУАЛЬНЫЙ ПРИМЕР</span><span className="portfolio-arrow"><ArrowUpRightIcon /></span></div><div className="portfolio-meta"><div><span>{p.type}</span><h3>{p.title}</h3></div><span className="portfolio-number">0{i + 1}</span></div><p className="portfolio-note">{p.note} — замените фото на реальные объекты.</p></article>)}</div>
       <div className="portfolio-disclaimer"><span className="disclaimer-dot" /> Демонстрационные изображения. Реальные фотографии выполненных работ добавляются после съёмки объектов.</div>
@@ -238,8 +239,9 @@ function App() {
       <form className="contact-form" onSubmit={submitForm}><div className="form-top"><span>ЗАПРОС НА СБОРКУ</span><span>DP / 04</span></div><label>Как к вам обращаться<input value={form.name} onChange={e => setForm(f => ({...f, name:e.target.value}))} placeholder="Ваше имя" autoComplete="name" /></label><label>Номер телефона<input value={form.phone} onChange={e => setForm(f => ({...f, phone:e.target.value}))} placeholder="+7 900 000-00-00" autoComplete="tel" type="tel" /></label><label>Что нужно собрать<select value={form.type} onChange={e => setForm(f => ({...f, type:e.target.value}))}><option>Шкаф или гардеробная</option><option>Кухня</option><option>Кровать или спальня</option><option>Стол или рабочее место</option><option>Комод, тумба, стеллаж</option><option>Несколько предметов мебели</option><option>Другое</option></select></label><label>Дополнительные детали <span className="optional">(необязательно)</span><textarea value={form.details} onChange={e => setForm(f => ({...f, details:e.target.value}))} placeholder="Модель, адрес, желаемая дата..." rows={3} /></label>{formError && <p className="form-error" role="status">{formError}</p>}<button className="button button-primary form-submit" type="submit">Отправить запрос <ArrowRight size={17} /></button><p className="form-privacy">Нажимая кнопку, вы соглашаетесь на обработку данных для ответа на запрос.</p></form>
     </div></section>
 
-    <footer className="footer"><div className="section-wrap footer-main"><a className="brand footer-brand" href="#top"><span className="brand-mark">P<span>.</span></span><span className="brand-word">PULIKOV<small>СБОРКА МЕБЕЛИ</small></span></a><p>Аккуратная сборка мебели<br />в Москве и Московской области.</p><div className="footer-links"><a href="#services">Услуги</a><a href="#portfolio">Портфолио</a><a href="#about">О мастере</a><a href="#contact">Контакты</a></div><a className="back-top" href="#top">НАВЕРХ ↑</a></div><div className="section-wrap footer-bottom"><span>© {new Date().getFullYear()} ДМИТРИЙ ПУЛИКОВ</span><span>СДЕЛАНО С ВНИМАНИЕМ К ДЕТАЛЯМ</span><a href="#top">PULIKOV / DP</a></div></footer>
+    <footer className="footer"><div className="section-wrap footer-main"><a className="brand footer-brand" href="#top"><span className="brand-mark">P<span>.</span></span><span className="brand-word">PULIKOV<small>СБОРКА МЕБЕЛИ</small></span></a><p>Аккуратная сборка мебели<br />в Москве и Московской области.</p><div className="footer-links"><a href="#services">Услуги</a><a href="/portfolio">Портфолио</a><a href="#about">О мастере</a><a href="#contact">Контакты</a></div><a className="back-top" href="#top">НАВЕРХ ↑</a></div><div className="section-wrap footer-bottom"><span>© {new Date().getFullYear()} ДМИТРИЙ ПУЛИКОВ</span><span>СДЕЛАНО С ВНИМАНИЕМ К ДЕТАЛЯМ</span><a href="#top">PULIKOV / DP</a></div></footer>
   </main>
 }
 function ArrowUpRightIcon() { return <ArrowDownRight size={20} /> }
+function App() { return window.location.pathname.replace(/\/$/, '') === '/portfolio' ? <PortfolioPage /> : <HomePage /> }
 export default App
