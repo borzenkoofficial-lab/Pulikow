@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { ArrowDownRight, ArrowRight, Check, ChevronDown, Clock3, Menu, MessageCircle, Move3D, Ruler, ShieldCheck, Sofa, X, Wrench, Instagram, Phone, Send } from 'lucide-react'
@@ -57,7 +57,7 @@ function App() {
   const [formError, setFormError] = useState('')
   const filters = ['Все', 'Шкафы', 'Кухни', 'Спальни', 'Рабочее место']
   const filteredPortfolio = useMemo(() => activeFilter === 'Все' ? portfolio : portfolio.filter(p => p.type === activeFilter), [activeFilter])
-  const submitForm = (e: React.FormEvent) => {
+  const submitForm = (e: FormEvent) => {
     e.preventDefault()
     if (!form.name.trim() || !form.phone.trim()) { setFormError('Укажите имя и телефон — это поможет связаться с вами.'); return }
     if (!CONTACT_PHONE) { setFormError('Форма подготовлена. Перед запуском сайта нужно добавить рабочий номер WhatsApp в настройках проекта.'); return }
