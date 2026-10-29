@@ -13,6 +13,7 @@ const filters = ['Все направления', 'Шкафы', 'Кухни', '�
 
 export default function PortfolioPage() {
   const [filter, setFilter] = useState('Все направления')
+  const [folderOpen, setFolderOpen] = useState(false)
   const visibleItems = useMemo(() => filter === 'Все направления' ? items : items.filter(item => item.category === filter), [filter])
 
   const handleTilt = (event: MouseEvent<HTMLElement>) => {
@@ -44,13 +45,13 @@ export default function PortfolioPage() {
         <h1>Собрано<br /><em>с вниманием.</em></h1>
         <p className="portfolio-page-intro">Лента мебельных направлений: что собираем, на что обращаем внимание и какие этапы входят в работу. Вся информация сразу на странице — без всплывающих окон и лишних переходов.</p>
       </div>
-      <div className="portfolio-page-hero-art portfolio-folder-scene" aria-label="Папка с примерами мебельных работ — наведите курсор">
+      <div className={folderOpen ? "portfolio-page-hero-art portfolio-folder-scene is-open" : "portfolio-page-hero-art portfolio-folder-scene"} role="button" tabIndex={0} aria-pressed={folderOpen} aria-label={folderOpen ? "Свернуть папку с примерами работ" : "Открыть папку с примерами работ"} onClick={() => setFolderOpen(open => !open)} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setFolderOpen(open => !open) } }}>
         <div className="folder-orbit folder-orbit-a" /><div className="folder-orbit folder-orbit-b" />
         <div className="folder-file folder-file-back"><span>DP / ARCHIVE</span><i>01—06</i><div className="folder-file-lines"><b /><b /><b /></div></div>
         <div className="folder-file folder-file-photo folder-file-photo-a"><img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=380&q=80" alt="" /></div>
         <div className="folder-file folder-file-photo folder-file-photo-b"><img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=380&q=80" alt="" /></div>
         <div className="portfolio-folder"><div className="portfolio-folder-tab" /><div className="portfolio-folder-face"><span className="folder-brand">P<span>.</span></span><span className="folder-title">ПАПКА<br />РАБОТ</span><span className="folder-caption">МЕБЕЛЬ · СБОРКА · ДЕТАЛИ</span><span className="folder-index">PORTFOLIO — 2026</span><span className="folder-emboss">DP</span></div></div>
-        <div className="folder-hover-hint"><span>НАВЕДИТЕ</span><span className="folder-hint-line" /><span>ОТКРОЙТЕ АРХИВ</span></div>
+        <div className="folder-hover-hint"><span>{folderOpen ? "НАЖМИТЕ" : "НАВЕДИТЕ / НАЖМИТЕ"}</span><span className="folder-hint-line" /><span>{folderOpen ? "СВЕРНУТЬ ПАПКУ" : "ОТКРОЙТЕ АРХИВ"}</span></div>
       </div>
       <div className="portfolio-page-stats"><div><strong>06</strong><span>НАПРАВЛЕНИЙ В ЛЕНТЕ</span></div><div><strong>3D</strong><span>МЯГКАЯ ГЛУБИНА И ДВИЖЕНИЕ</span></div><div><strong>01</strong><span>СТРАНИЦА БЕЗ ЛИШНИХ ШАГОВ</span></div><a href="#portfolio-gallery">Перейти к ленте <ArrowDownRight size={17} /></a></div>
     </section>
