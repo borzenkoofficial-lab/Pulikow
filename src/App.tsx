@@ -122,6 +122,14 @@ function App() {
         <p className="hero-lead">Сборка мебели без спешки и лишних вопросов. Аккуратно, по инструкции и с вниманием к каждой детали.</p>
         <div className="hero-actions"><a href="#contact" className="button button-primary">Рассчитать сборку <ArrowRight size={17} /></a><a href="#portfolio" className="text-link">Посмотреть работы <ArrowDownRight size={17} /></a></div>
         <div className="hero-proof"><div className="proof-icon"><Check size={17} /></div><div><strong>Ровно. Надёжно. По делу.</strong><span>Согласуем задачу до начала работы</span></div></div>
+        <div className="hero-person-card">
+          <div className="hero-person-photo">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=360&h=440&q=85" alt="Временный портрет для макета сайта" />
+            <span className="hero-person-photo-mark">DP / 01</span>
+          </div>
+          <div className="hero-person-copy"><span>ЛИЧНО ВЫПОЛНЯЮ ЗАКАЗ</span><strong>Дмитрий Пуликов</strong><small>Здесь будет настоящее фото мастера</small></div>
+          <span className="hero-person-arrow">↗</span>
+        </div>
       </div>
       <HeroFurnitureCarousel />
       <div className="hero-bottom"><span>МЕБЕЛЬ · ТОЧНОСТЬ · ДЕТАЛИ</span><a href="#services">Листайте, чтобы узнать больше <ChevronDown size={15} /></a><span>ДМИТРИЙ ПУЛИКОВ</span></div>
