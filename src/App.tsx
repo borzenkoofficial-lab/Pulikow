@@ -117,7 +117,7 @@ function IntroSequence({ onComplete }: { onComplete: () => void }) {
 }
 
 function HomePage() {
-  const [introVisible, setIntroVisible] = useState(true)
+  const [introVisible, setIntroVisible] = useState(false)
   const finishIntro = useMemo(() => () => setIntroVisible(false), [])
   useEffect(() => {
     const scenes = Array.from(document.querySelectorAll<HTMLElement>('.scroll-scene'))
@@ -243,5 +243,75 @@ function HomePage() {
   </main>
 }
 function ArrowUpRightIcon() { return <ArrowDownRight size={20} /> }
-function App() { return window.location.pathname.replace(/\/$/, '') === '/portfolio' ? <PortfolioPage /> : <HomePage /> }
+function CinematicLoader({ destination }: { destination: string }) {
+  const [quoteIndex, setQuoteIndex] = useState(0)
+  const quotes = [
+    { line: 'У каждой детали', accent: 'есть своё место.', note: 'ТОЧНОСТЬ НАЧИНАЕТСЯ С МЕЛОЧЕЙ' },
+    { line: 'Хорошая работа', accent: 'видна без слов.', note: 'АККУРАТНОСТЬ · ГЕОМЕТРИЯ · РЕЗУЛЬТАТ' },
+    { line: 'Собрано', accent: 'с вниманием.', note: destination === '/portfolio' ? 'ОТКРЫВАЕМ ПОРТФОЛИО' : 'ВОЗВРАЩАЕМСЯ В PULIKOV' },
+  ]
+  useEffect(() => {
+    const timer = window.setInterval(() => setQuoteIndex(index => (index + 1) % quotes.length), 720)
+    return () => window.clearInterval(timer)
+  }, [])
+  return <div className="cinematic-loader" role="status" aria-label="Загрузка страницы">
+    <div className="cinematic-grain" />
+    <div className="cinematic-top"><span>P<span className="cinematic-lime">.</span> / PULIKOV</span><span>СБОРКА МЕБЕЛИ · МОСКВА</span><span>DP — 2026</span></div>
+    <div className="cinematic-crosshair cinematic-crosshair-a" /><div className="cinematic-crosshair cinematic-crosshair-b" />
+    <div className="cinematic-quote-stage" key={quoteIndex}>
+      <span className="cinematic-quote-number">0{quoteIndex + 1} / 03</span>
+      <p>{quotes[quoteIndex].line}<br /><em>{quotes[quoteIndex].accent}</em></p>
+      <span className="cinematic-quote-note">{quotes[quoteIndex].note}</span>
+    </div>
+    <div className="cinematic-bottom"><span>ПОДГОТАВЛИВАЕМ ПРОСТРАНСТВО</span><div className="cinematic-progress"><i /></div><span>ЗАГРУЗКА <b>•••</b></span></div>
+    <div className="cinematic-giant" aria-hidden="true">PULIKOV</div>
+  </div>
+}
+
+function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname.replace(/\/$/, '') || '/')
+  const [loaderVisible, setLoaderVisible] = useState(true)
+  const [destination, setDestination] = useState(window.location.pathname.replace(/\/$/, '') || '/')
+  useEffect(() => {
+    const initialTimer = window.setTimeout(() => setLoaderVisible(false), 2450)
+    const onPopState = () => {
+      setCurrentPath(window.location.pathname.replace(/\/$/, '') || '/')
+      setDestination(window.location.pathname.replace(/\/$/, '') || '/')
+      setLoaderVisible(true)
+      window.setTimeout(() => setLoaderVisible(false), 2450)
+    }
+    window.addEventListener('popstate', onPopState)
+    return () => { window.clearTimeout(initialTimer); window.removeEventListener('popstate', onPopState) }
+  }, [])
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      const target = event.target
+      if (!(target instanceof Element)) return
+      const anchor = target.closest('a[href]')
+      if (!(anchor instanceof HTMLAnchorElement) || anchor.target === '_blank' || anchor.hasAttribute('download')) return
+      const url = new URL(anchor.href, window.location.href)
+      if (url.origin !== window.location.origin) return
+      const path = url.pathname.replace(/\/$/, '') || '/'
+      if (path !== '/' && path !== '/portfolio') return
+      if (path === currentPath && !loaderVisible) return
+      event.preventDefault()
+      setDestination(path)
+      setLoaderVisible(true)
+      window.setTimeout(() => {
+        window.history.pushState({}, '', url.pathname + url.search + url.hash)
+        setCurrentPath(path)
+        if (url.hash) window.setTimeout(() => document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView({ behavior: 'smooth' }), 80)
+        else window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+      }, 1500)
+      window.setTimeout(() => setLoaderVisible(false), 2550)
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [currentPath, loaderVisible])
+  return <>
+    {currentPath === '/portfolio' ? <PortfolioPage /> : <HomePage />}
+    {loaderVisible && <CinematicLoader destination={destination} />}
+  </>
+}
 export default App
