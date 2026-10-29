@@ -759,6 +759,44 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
   transform: translate3d(0, 0, 0) scale(1);
   clip-path: inset(0 0 0 0 round 0px);
 }
+.scroll-scene > .section-wrap,
+.scroll-scene > .section-wrap > .section-heading,
+.scroll-scene > .section-wrap > .portfolio-heading,
+.scroll-scene > .model-copy,
+.scroll-scene > .about-copy,
+.scroll-scene > .contact-copy {
+  position: relative;
+}
+.scroll-scene .section-heading h2,
+.scroll-scene .model-copy h2,
+.scroll-scene .about-copy h2,
+.scroll-scene .contact-copy h2 {
+  transform: translate3d(0, var(--scene-text-shift, 20px), 0);
+  opacity: calc(.72 + var(--scene-progress, 0) * .28);
+  transition: opacity .25s linear;
+}
+.scroll-scene .section-heading > p,
+.scroll-scene .model-copy > p,
+.scroll-scene .about-copy > p,
+.scroll-scene .contact-copy > p {
+  transform: translate3d(0, calc(var(--scene-text-shift, 20px) * .7), 0);
+  opacity: calc(.76 + var(--scene-progress, 0) * .24);
+}
+.scroll-scene .portfolio-image-wrap,
+.scroll-scene .model-stage,
+.scroll-scene .about-portrait,
+.scroll-scene .process-item {
+  transform: translate3d(0, var(--scene-shift, 0px), 0);
+  transition: transform .12s linear;
+}
+.scroll-scene .portfolio-image-wrap img {
+  transform: scale(calc(1.04 - var(--scene-progress, 0) * .04));
+  transition: transform .12s linear;
+}
+.scroll-scene .service-row {
+  transition: background .25s, padding .25s, transform .35s cubic-bezier(.2,.72,.2,1);
+}
+.scroll-scene .service-row:hover { transform: translateX(6px); }
 .intro-sequence { padding: clamp(22px, 4vw, 56px); }
 @media (max-width:760px) {
   .intro-sequence { padding:22px 20px 20px; }
@@ -776,6 +814,14 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
   .intro-bottomline button { font-size:9px; white-space:nowrap; }
   .intro-giant { right:-.07em; bottom:-.04em; font-size:25vw; }
   .scroll-scene { transform:translate3d(0,34px,0) scale(.99); clip-path:inset(0 0 3% 0 round 3px); }
+  .scroll-scene .section-heading h2,
+  .scroll-scene .model-copy h2,
+  .scroll-scene .about-copy h2,
+  .scroll-scene .contact-copy h2 { transform:translate3d(0,calc(var(--scene-text-shift, 12px) * .65),0); }
+  .scroll-scene .portfolio-image-wrap,
+  .scroll-scene .model-stage,
+  .scroll-scene .about-portrait,
+  .scroll-scene .process-item { transform:translate3d(0,calc(var(--scene-shift, 0px) * .6),0); }
 }
 @media (prefers-reduced-motion:reduce) {
   .intro-sequence,.intro-monogram,.intro-kicker,.intro-center h2 span,.intro-center h2 em,.intro-center h2 strong,.intro-message,.intro-signature { animation:none !important; }
