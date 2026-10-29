@@ -612,3 +612,81 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
  .hero-wordmark{-webkit-text-stroke-color:rgba(63,64,48,.16)}.hero-carousel-note{background:rgba(250,248,241,.98)}
  .service-row::after{display:none}
 }
+
+
+/* HERO portrait placeholder — warm editorial style */
+.hero-person-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 23px;
+  padding: 9px 13px 9px 9px;
+  position: relative;
+  z-index: 3;
+  background: rgba(250,248,241,.92);
+  border: 1px solid rgba(93,96,70,.19);
+  box-shadow: 0 10px 30px rgba(63,55,37,.07);
+  backdrop-filter: blur(8px);
+  animation: hero-person-arrive .8s .18s both cubic-bezier(.2,.75,.2,1);
+}
+.hero-person-photo {
+  position: relative;
+  width: 61px;
+  height: 72px;
+  flex: 0 0 61px;
+  overflow: hidden;
+  background: #ded8c9;
+}
+.hero-person-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 36%;
+  filter: saturate(.72) contrast(.97);
+  transition: transform .55s cubic-bezier(.2,.75,.2,1), filter .4s;
+}
+.hero-person-card:hover .hero-person-photo img { transform: scale(1.07); filter: saturate(.95); }
+.hero-person-photo:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255,255,255,.38);
+  pointer-events: none;
+}
+.hero-person-photo-mark {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  padding: 3px 4px;
+  color: #fffdf6;
+  background: rgba(38,40,31,.68);
+  font-size: 6px;
+  letter-spacing: .1em;
+}
+.hero-person-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.hero-person-copy > span { color: #73775b; font-size: 7px; font-weight: 800; letter-spacing: .14em; }
+.hero-person-copy strong { color: #292b24; font-size: 12px; font-weight: 750; letter-spacing: -.02em; }
+.hero-person-copy small { color: #77766b; font-size: 9px; line-height: 1.4; }
+.hero-person-arrow { align-self: flex-start; margin: 2px 0 0 7px; color: #7c8658; font-size: 18px; }
+@keyframes hero-person-arrive {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 1050px) {
+  .hero-person-card { margin-top: 18px; }
+}
+@media (max-width: 760px) {
+  .hero-person-card { margin-top: 20px; gap: 11px; padding: 8px 11px 8px 8px; }
+  .hero-person-photo { width: 54px; height: 64px; flex-basis: 54px; }
+  .hero-person-copy > span { font-size: 6px; }
+  .hero-person-copy strong { font-size: 11px; }
+  .hero-person-copy small { font-size: 8px; }
+  .hero-person-arrow { margin-left: 1px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-person-card { animation: none; }
+  .hero-person-card:hover .hero-person-photo img { transform: none; }
+}
