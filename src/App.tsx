@@ -303,7 +303,7 @@ function App() {
         setCurrentPath(path)
         if (url.hash) window.setTimeout(() => document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView({ behavior: 'smooth' }), 80)
         else window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-      }, 1500)
+      }, 2450)
       window.setTimeout(() => setLoaderVisible(false), 2550)
     }
     document.addEventListener('click', onClick)
