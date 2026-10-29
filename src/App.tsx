@@ -119,21 +119,45 @@ function App() {
   const [introVisible, setIntroVisible] = useState(true)
   const finishIntro = useMemo(() => () => setIntroVisible(false), [])
   useEffect(() => {
-    const scenes = document.querySelectorAll<HTMLElement>('.scroll-scene')
-    if (!('IntersectionObserver' in window)) {
+    const scenes = Array.from(document.querySelectorAll<HTMLElement>('.scroll-scene'))
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion) {
       scenes.forEach(scene => scene.classList.add('scene-active'))
       return
     }
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('scene-active')
-          observer.unobserve(entry.target)
-        }
+        if (entry.isIntersecting) entry.target.classList.add('scene-active')
       })
-    }, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' })
+    }, { threshold: 0.08, rootMargin: '0px 0px -5% 0px' })
     scenes.forEach(scene => observer.observe(scene))
-    return () => observer.disconnect()
+
+    let frame = 0
+    const updateScrollScenes = () => {
+      frame = 0
+      const viewportHeight = window.innerHeight || 1
+      scenes.forEach(scene => {
+        const rect = scene.getBoundingClientRect()
+        const progress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (viewportHeight + rect.height * 0.15)))
+        const shift = (0.5 - progress) * 34
+        const textShift = (1 - progress) * 20
+        scene.style.setProperty('--scene-progress', progress.toFixed(3))
+        scene.style.setProperty('--scene-shift', `${shift.toFixed(1)}px`)
+        scene.style.setProperty('--scene-text-shift', `${textShift.toFixed(1)}px`)
+      })
+    }
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateScrollScenes)
+    }
+    updateScrollScenes()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (frame) window.cancelAnimationFrame(frame)
+    }
   }, [])
   const [activeFilter, setActiveFilter] = useState('Все')
   const [menuOpen, setMenuOpen] = useState(false)
