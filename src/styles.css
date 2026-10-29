@@ -742,22 +742,24 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
 @keyframes intro-fade-in { from { opacity:0; } to { opacity:1; } }
 @keyframes intro-curtain-out { 0% { opacity:1; transform:translateY(0) scaleY(1); clip-path:inset(0 0 0 0); } 60% { opacity:1; } 100% { opacity:0; transform:translateY(-3%) scaleY(.97); clip-path:inset(0 0 100% 0); } }
 
-/* Scroll storytelling: every section acts like a sheet sliding over the previous one. */
-.sheet-panel { position:relative; isolation:isolate; border-radius:25px 25px 0 0; box-shadow:0 -16px 40px rgba(52,48,36,.075),0 -1px 0 rgba(255,255,255,.8); }
-.sheet-panel-1 { z-index:2; margin-top:-24px; }
-.sheet-panel-2 { z-index:3; margin-top:-22px; }
-.sheet-panel-3 { z-index:4; margin-top:-22px; }
-.sheet-panel-4 { z-index:5; margin-top:-22px; }
-.sheet-panel-5 { z-index:6; margin-top:-22px; }
-.sheet-panel-6 { z-index:7; margin-top:-22px; }
-.sheet-panel-7 { z-index:8; margin-top:-22px; }
-.sheet-panel:before { content:""; position:absolute; z-index:-1; top:0; left:clamp(18px,4vw,58px); width:56px; height:1px; background:rgba(110,116,78,.32); pointer-events:none; }
-.sheet-panel-3:before,.sheet-panel-5:before,.sheet-panel-7:before { left:auto; right:clamp(18px,4vw,58px); }
-@media (min-width:761px) {
-  .sheet-panel { border-radius:32px 32px 0 0; }
-  .sheet-panel-1 { margin-top:-30px; }
-  .sheet-panel-2,.sheet-panel-3,.sheet-panel-4,.sheet-panel-5,.sheet-panel-6,.sheet-panel-7 { margin-top:-28px; }
+/* Scroll transitions — sections reveal as continuous scenes, without stacked-sheet styling. */
+.scroll-scene {
+  position: relative;
+  opacity: 0;
+  transform: translate3d(0, 54px, 0) scale(.985);
+  clip-path: inset(0 0 5% 0 round 4px);
+  transition:
+    opacity .85s cubic-bezier(.22,.75,.25,1),
+    transform 1s cubic-bezier(.2,.72,.2,1),
+    clip-path 1s cubic-bezier(.2,.72,.2,1);
+  will-change: opacity, transform, clip-path;
 }
+.scroll-scene.scene-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  clip-path: inset(0 0 0 0 round 0px);
+}
+.intro-sequence { padding: clamp(22px, 4vw, 56px); }
 @media (max-width:760px) {
   .intro-sequence { padding:22px 20px 20px; }
   .intro-topline { font-size:7px; letter-spacing:.1em; }
@@ -773,11 +775,10 @@ body::before{opacity:.44;background-image:linear-gradient(rgba(90,87,68,.055) 1p
   .intro-progress { width:22vw; min-width:48px; }
   .intro-bottomline button { font-size:9px; white-space:nowrap; }
   .intro-giant { right:-.07em; bottom:-.04em; font-size:25vw; }
-  .sheet-panel { border-radius:20px 20px 0 0; }
-  .sheet-panel-1 { margin-top:-18px; }
-  .sheet-panel-2,.sheet-panel-3,.sheet-panel-4,.sheet-panel-5,.sheet-panel-6,.sheet-panel-7 { margin-top:-16px; }
+  .scroll-scene { transform:translate3d(0,34px,0) scale(.99); clip-path:inset(0 0 3% 0 round 3px); }
 }
 @media (prefers-reduced-motion:reduce) {
   .intro-sequence,.intro-monogram,.intro-kicker,.intro-center h2 span,.intro-center h2 em,.intro-center h2 strong,.intro-message,.intro-signature { animation:none !important; }
   .intro-sequence-leaving { animation:none !important; opacity:0; }
+  .scroll-scene,.scroll-scene.scene-active { opacity:1; transform:none; clip-path:none; transition:none; }
 }
